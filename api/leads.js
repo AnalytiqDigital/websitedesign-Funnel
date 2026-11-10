@@ -51,7 +51,9 @@ module.exports = async function handler(req, res) {
 
   if (!response.ok) {
     console.error(`The n8n webhook returned HTTP ${response.status}.`);
-    return res.status(502).json({ error: 'The lead service could not process your submission. Please try again or contact us on WhatsApp.' });
+    return res.status(502).json({
+      error: `The n8n webhook returned HTTP ${response.status}. Check the production webhook URL, workflow activation, and latest n8n execution.`,
+    });
   }
 
   return res.status(200).json({ ok: true });
