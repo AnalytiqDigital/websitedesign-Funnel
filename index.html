@@ -58,6 +58,14 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
 .wa{position:fixed;left:16px;bottom:16px;z-index:50;background:#25d366;color:#04210f;font-weight:700;text-decoration:none;padding:12px 16px;border-radius:2px;box-shadow:4px 4px 0 var(--violet)}
 .google-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-top:10px}
 .google-link:hover{color:var(--cyan)}
+
+.portfolio-card .thumb img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
 @media(max-width:820px){.hero{grid-template-columns:1fr}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -71,6 +79,53 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
       <a class="hdr-link" href="https://wa.me/2348124314217?text=Hi%20AnalytIQ%2C%20I%27d%20like%20to%20talk%20about%20a%20project." data-wa>WhatsApp</a>
     </div>
   </header>
+
+  <!-- Portfolio – Nigerian Army first -->
+  <section>
+    <h2>Recent Work we have delivered</h2>
+    <div class="grid">
+      <div class="card portfolio-card">
+        <div class="thumb">
+          <img src="DATportfolio.png" alt="Officers Courses Nomination System" />
+        </div>
+        <div class="body">
+          <span class="tag">Nigerian Army</span>
+          <h3>Officers Courses Nomination System</h3>
+          <p>Replaced manual records with a digital nomination and tracking system for the Nigerian Army.</p>
+        </div>
+      </div>
+      <div class="card portfolio-card">
+        <div class="thumb">
+          <img src="inventory-management-system.png" alt="Multi-branch Inventory System" />
+        </div>
+        <div class="body">
+          <span class="tag">Distribution</span>
+          <h3>Multi-branch Inventory System</h3>
+          <p>Real-time stock visibility and low-stock alerts across multiple branches.</p>
+        </div>
+      </div>
+      <div class="card portfolio-card">
+        <div class="thumb">
+          <img src="ai-whatsapp-automation.png" alt="AI WhatsApp Automation" />
+        </div>
+        <div class="body">
+          <span class="tag">Retail</span>
+          <h3>AI Whatsapp Automation</h3>
+          <p>Deployed AI-powered WhatsApp automation for efficient customer engagement.</p>
+        </div>
+      </div>
+      <div class="card portfolio-card">
+        <div class="thumb">
+          <img src="security-operations.png" alt="Security Operations Website and Dashboard" />
+        </div>
+        <div class="body">
+          <span class="tag">Security</span>
+          <h3>Security Operations Website and Dashboard</h3>
+          <p>Developed a comprehensive website and dashboard for managing and monitoring security operations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="hero">
     <div>
@@ -90,8 +145,8 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
 
     <div class="card" id="get-started">
       <div id="form-box">
-        <h2 style="font-size:21px;margin-bottom:6px">Get a free 15-minute call</h2>
-        <p class="small" style="margin:0 0 14px">We will reply on WhatsApp. Ready buyers are handed to a human quickly.</p>
+        <h2 style="font-size:21px;margin-bottom:6px">Tell us what you need</h2>
+        <p class="small" style="margin:0 0 14px">Fill out the form and we will contact you about the right solution for your business.</p>
         <form id="lead-form" novalidate>
           <div class="row">
             <div>
@@ -107,17 +162,72 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
               <input id="email" name="email" type="email" autocomplete="email" maxlength="200" placeholder="you@company.com">
             </div>
             <div>
-              <label for="service">What do you need?</label>
+              <label for="service">What Type of Website do you need?</label>
               <select id="service" name="service">
-                <option value="">Choose one</option>
-                <option>Website design or development</option>
-                <option>AI automation or WhatsApp assistant</option>
-                <option>Custom software</option>
-                <option>Power BI dashboards</option>
-                <option>AnalytIQ ERP (POS & inventory)</option>
-                <option>Garage or school management system</option>
-                <option>Not sure yet</option>
-              </select>
+    <option value="">Select a website or solution type</option>
+
+    <optgroup label="Business Websites">
+        <option value="Corporate Website">Corporate / Company Website</option>
+        <option value="Business Website">Small Business Website</option>
+        <option value="Portfolio Website">Personal / Professional Portfolio</option>
+        <option value="Consulting Website">Consulting / Professional Services Website</option>
+        <option value="Startup Website">Startup Website</option>
+        <option value="Landing Page">Landing Page / Sales Funnel</option>
+        <option value="NGO Website">NGO / Non-Profit Website</option>
+        <option value="Government Website">Government / Institutional Website</option>
+    </optgroup>
+
+    <optgroup label="Online Stores & Booking Websites">
+        <option value="Ecommerce Website">E-commerce / Online Store</option>
+        <option value="Marketplace Website">Multi-Vendor Marketplace</option>
+        <option value="Real Estate Website">Real Estate / Property Listing Website</option>
+        <option value="Hotel Website">Hotel / Hospitality Website</option>
+        <option value="Restaurant Website">Restaurant / Food Ordering Website</option>
+        <option value="Booking Website">Appointment / Booking Website</option>
+        <option value="Travel Website">Travel / Tourism Website</option>
+        <option value="Directory Website">Business Directory / Listing Website</option>
+    </optgroup>
+
+    <optgroup label="Education & Healthcare">
+        <option value="School Website">School / Educational Institution Website</option>
+        <option value="LMS">Learning Management System (LMS)</option>
+        <option value="Online Examination System">Online Examination / CBT Platform</option>
+        <option value="Hospital Website">Hospital / Clinic Website</option>
+        <option value="Healthcare Management">Hospital / Healthcare Management System</option>
+    </optgroup>
+
+    <optgroup label="Custom Software & Business Systems">
+        <option value="Custom Web Application">Custom Web Application</option>
+        <option value="ERP">ERP / Business Management System</option>
+        <option value="Inventory Management">Inventory / Stock Management System</option>
+        <option value="CRM">Customer Relationship Management (CRM)</option>
+        <option value="POS">Point of Sale (POS) System</option>
+        <option value="Garage Management">Garage / Auto Workshop Management System</option>
+        <option value="School Management">School Management System</option>
+        <option value="HR Management">HR / Staff Management System</option>
+        <option value="Finance Management">Accounting / Financial Management System</option>
+        <option value="Logistics Management">Logistics / Fleet Management System</option>
+        <option value="Custom Dashboard">Business Intelligence / Analytics Dashboard</option>
+    </optgroup>
+
+    <optgroup label="AI & Business Automation">
+        <option value="AI Automation">AI Business Process Automation</option>
+        <option value="WhatsApp AI Assistant">AI WhatsApp Customer Support Assistant</option>
+        <option value="AI Sales Agent">AI Sales / Lead Generation Agent</option>
+        <option value="AI Voice Agent">AI Voice / Calling Agent</option>
+        <option value="WhatsApp Dashboard">WhatsApp Live Support / Team Inbox Dashboard</option>
+        <option value="Workflow Automation">Workflow Automation (n8n / API Integration)</option>
+        <option value="AI Integration">AI Integration into Existing Website / Software</option>
+    </optgroup>
+
+    <optgroup label="Other Services">
+        <option value="Website Redesign">Website Redesign / Upgrade</option>
+        <option value="Website Maintenance">Website Maintenance / Technical Support</option>
+        <option value="Domain and Hosting">Domain Registration / Hosting Setup</option>
+        <option value="Not Sure">Not Sure Yet – I Need Professional Guidance</option>
+        <option value="Other">Other – Let Me Explain My Requirements</option>
+    </optgroup>
+</select>
             </div>
             <div>
               <label for="message">Tell us a little about it</label>
@@ -150,45 +260,6 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
     </div>
   </div>
 
-  <!-- Portfolio – Nigerian Army first -->
-  <section>
-    <h2>Work we have delivered</h2>
-    <div class="grid">
-      <div class="card portfolio-card">
-        <div class="thumb">[ Portfolio image placeholder ]</div>
-        <div class="body">
-          <span class="tag">Nigerian Army</span>
-          <h3>Officers Courses Nomination System</h3>
-          <p>Replaced manual records with a digital nomination and tracking system for the Nigerian Army.</p>
-        </div>
-      </div>
-      <div class="card portfolio-card">
-        <div class="thumb">[ Portfolio image placeholder ]</div>
-        <div class="body">
-          <span class="tag">Distribution</span>
-          <h3>Multi-branch Inventory System</h3>
-          <p>Real-time stock visibility and low-stock alerts across multiple branches.</p>
-        </div>
-      </div>
-      <div class="card portfolio-card">
-        <div class="thumb">[ Portfolio image placeholder ]</div>
-        <div class="body">
-          <span class="tag">Hospitality</span>
-          <h3>AI Restaurant Ordering</h3>
-          <p>Orders from WhatsApp and walk-ins captured and sent straight to the kitchen.</p>
-        </div>
-      </div>
-      <div class="card portfolio-card">
-        <div class="thumb">[ Portfolio image placeholder ]</div>
-        <div class="body">
-          <span class="tag">Healthcare</span>
-          <h3>Hospital Operations Dashboard</h3>
-          <p>Patient wellness and operational numbers in one clear Power BI view.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section>
     <h2>What we build</h2>
     <div class="grid">
@@ -202,8 +273,8 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
   <section>
     <h2>How it works</h2>
     <div class="grid">
-      <div class="card"><div style="font-size:28px;font-weight:800;color:var(--cyan)">1</div><h3>You send details</h3><p>Form or WhatsApp. Our AI answers from the knowledge base and detects if you are ready to buy.</p></div>
-      <div class="card"><div style="font-size:28px;font-weight:800;color:var(--cyan)">2</div><h3>Ready buyers get a human</h3><p>Qualified leads are handed off to the team. Everyone else gets helpful answers and follow-up.</p></div>
+      <div class="card"><div style="font-size:28px;font-weight:800;color:var(--cyan)">1</div><h3>You send details</h3><p>Form or WhatsApp. Our AI answers from the knowledge base and detects when you are ready to start.</p></div>
+      <div class="card"><div style="font-size:28px;font-weight:800;color:var(--cyan)">2</div><h3>Ready To start?You get a to talk to our team</h3><p>Qualified leads are handed off to the team. Everyone else gets helpful answers and follow-up.</p></div>
       <div class="card"><div style="font-size:28px;font-weight:800;color:var(--cyan)">3</div><h3>Clear scope & milestones</h3><p>Written proposal, milestone payments, training and documentation so you are not stuck depending on us.</p></div>
     </div>
   </section>
