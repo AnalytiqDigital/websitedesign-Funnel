@@ -15,6 +15,12 @@ module.exports = async function handler(req, res) {
   if (typeof body.phone !== 'string' || body.phone.replace(/\D/g, '').length < 10) {
     return res.status(400).json({ error: 'Please enter a WhatsApp number we can reach.' });
   }
+  if (typeof body.service !== 'string' || !body.service.trim()) {
+    return res.status(400).json({ error: 'Please select a website or service type.' });
+  }
+  if (typeof body.budget !== 'string' || !body.budget.trim()) {
+    return res.status(400).json({ error: 'Please select your estimated project budget.' });
+  }
   if (body.consent !== true) {
     return res.status(400).json({ error: 'Please agree to be contacted before submitting.' });
   }
