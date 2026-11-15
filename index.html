@@ -741,7 +741,7 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
       </div>
       <div class="ok" id="ok" role="status">
         <h3>Thanks, we have your details.</h3>
-        <p id="ok-reply">Your enquiry has been submitted. We will review your details and get back to you.</p>
+        <p id="ok-reply">Your enquiry has been submitted. Opening WhatsApp with your project details...</p>
         <p style="margin-top:10px">
           <a class="btn alt" href="https://cal.com/analytiq-digital/15min" target="_blank" rel="noopener">Or book a free call</a>
         </p>
@@ -861,10 +861,15 @@ var AI_WHATSAPP_NUMBER = 'YOUR_AI_WHATSAPP_NUMBER';
         return data;
       });
     })
-    .then(function () {
+    .then(function (data) {
       try { if (window.fbq) fbq('track', 'Lead'); if (window.gtag) gtag('event', 'generate_lead'); } catch (x) {}
       document.getElementById('form-box').style.display = 'none';
       document.getElementById('ok').style.display = 'block';
+      if (data.redirectUrl) {
+        window.location.href = data.redirectUrl;
+      } else {
+        document.getElementById('ok-reply').textContent = 'Your enquiry was submitted, but we could not open the WhatsApp link. Please contact us using the WhatsApp button.';
+      }
     })
     .catch(function (error) {
       showErr(error.message || 'We could not submit your enquiry. Please try again.');
