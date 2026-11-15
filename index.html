@@ -741,10 +741,7 @@ footer{padding:28px 0 90px;color:var(--muted);font-size:13px;border-top:1px soli
       </div>
       <div class="ok" id="ok" role="status">
         <h3>Thanks, we have your details.</h3>
-        <p id="ok-reply">Opening WhatsApp so you can chat with us. If nothing opens, tap the button below.</p>
-        <p style="margin-top:14px">
-          <a class="btn" id="wa-after" href="#" target="_blank" rel="noopener">Continue on WhatsApp</a>
-        </p>
+        <p id="ok-reply">Your enquiry has been submitted. We will review your details and get back to you.</p>
         <p style="margin-top:10px">
           <a class="btn alt" href="https://cal.com/analytiq-digital/15min" target="_blank" rel="noopener">Or book a free call</a>
         </p>
@@ -864,20 +861,13 @@ var AI_WHATSAPP_NUMBER = 'YOUR_AI_WHATSAPP_NUMBER';
         return data;
       });
     })
-    .then(function (data) {
+    .then(function () {
       try { if (window.fbq) fbq('track', 'Lead'); if (window.gtag) gtag('event', 'generate_lead'); } catch (x) {}
       document.getElementById('form-box').style.display = 'none';
       document.getElementById('ok').style.display = 'block';
-      var wa = document.getElementById('wa-after');
-      if (data.redirectUrl) {
-        wa.href = data.redirectUrl;
-        setTimeout(function () { window.location.href = data.redirectUrl; }, 600);
-      } else {
-        wa.href = 'https://wa.me/' + (/^\d{10,15}$/.test(AI_WHATSAPP_NUMBER) ? AI_WHATSAPP_NUMBER : '2348124314217') + '?text=' + encodeURIComponent('Hi AnalytIQ, I am ' + d.name + '. I just sent the form.');
-      }
     })
     .catch(function (error) {
-      showErr(error.message || 'Something went wrong. Please try WhatsApp instead.');
+      showErr(error.message || 'We could not submit your enquiry. Please try again.');
       btn.disabled = false;
       btn.textContent = label;
     });

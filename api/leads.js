@@ -14,7 +14,7 @@
 async function handler(req, res) {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false, error: 'Method not allowed' }); }
   const url = process.env.N8N_FUNNEL_WEBHOOK;
-  if (!url) return res.status(500).json({ ok: false, error: 'The form is not connected yet. Please use WhatsApp instead.' });
+  if (!url) return res.status(500).json({ ok: false, error: 'Form submissions are not configured. Set the N8N_FUNNEL_WEBHOOK environment variable and redeploy.' });
 
   let body = req.body;
   if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
