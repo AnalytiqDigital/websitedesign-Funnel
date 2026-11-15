@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>AnalytIQ Chat Dashboard</title>
+<style>
+:root{--ink:#070914;--p1:#0d1124;--p2:#151a33;--p3:#1d2444;--line:#2a3150;--text:#f3f5ff;--mut:#9aa4c7;--lime:#9bff6a;--cyan:#30e7ff;--vio:#8a63ff;--mag:#ff4eb8;--amb:#ffc857;--red:#ff6b81}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--ink);color:var(--text);font:14px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex;flex-direction:column}
+button{font:inherit;cursor:pointer}
+input,select,textarea{font:inherit;color:var(--text);background:var(--ink);border:1px solid var(--line);border-radius:2px;padding:8px 10px;width:100%}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offset:1px}
+header{display:flex;align-items:center;gap:14px;padding:10px 16px;border-bottom:1px solid var(--line);background:var(--p1);flex-wrap:wrap}
+.brand{font-weight:800;letter-spacing:.02em}.brand span{color:var(--lime)}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-left:auto}
+.chip{border:1px solid var(--line);background:var(--p2);padding:4px 10px;border-radius:2px;font-size:12px;color:var(--mut)}
+.chip b{color:var(--text);margin-left:4px}.chip.hot b{color:var(--red)}.chip.mid b{color:var(--amb)}
+.btn{border:1px solid var(--line);background:var(--p2);color:var(--text);padding:7px 12px;border-radius:2px}
+.btn:hover{border-color:var(--cyan)}
+.btn.pri{background:var(--lime);border-color:var(--lime);color:var(--ink);font-weight:700}
+.btn.warn{border-color:var(--amb);color:var(--amb)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+main{flex:1;min-height:0;display:grid;grid-template-columns:320px 1fr 300px}
+.col{min-height:0;display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.col:last-child{border-right:0}
+.tools{padding:10px;border-bottom:1px solid var(--line);display:grid;gap:8px;background:var(--p1)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap}
+.tab{border:1px solid var(--line);background:transparent;color:var(--mut);padding:3px 9px;border-radius:2px;font-size:12px}
+.tab.on{background:var(--vio);border-color:var(--vio);color:#fff}
+.list{overflow:auto;flex:1}
+.row{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:transparent;color:inherit;padding:10px 12px}
+.row:hover{background:var(--p2)}.row.sel{background:var(--p3);box-shadow:inset 3px 0 0 var(--cyan)}
+.row .top{display:flex;justify-content:space-between;gap:8px}.row .nm{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .tm{color:var(--mut);font-size:12px;white-space:nowrap}.row .pv{color:var(--mut);font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px}
+.badge{display:inline-block;font-size:11px;padding:1px 7px;border-radius:2px;border:1px solid var(--line);color:var(--mut);margin-right:4px}
+.b-needs_human{border-color:var(--red);color:var(--red)}.b-human{border-color:var(--lime);color:var(--lime)}.b-ai{border-color:var(--cyan);color:var(--cyan)}.b-warn{border-color:var(--amb);color:var(--amb)}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--red);margin-right:6px}
+.thread-head{padding:10px 14px;border-bottom:1px solid var(--line);background:var(--p1);display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.thread-head h2{margin:0;font-size:16px}.thread-head .sp{flex:1}
+.msgs{flex:1;overflow:auto;padding:14px;display:flex;flex-direction:column;gap:8px}
+.m{max-width:78%;padding:8px 11px;border-radius:2px;white-space:pre-wrap;word-wrap:break-word}
+.m small{display:block;color:var(--mut);font-size:11px;margin-top:3px}
+.m.customer{align-self:flex-start;background:var(--p3);border-left:3px solid var(--vio)}
+.m.ai{align-self:flex-end;background:#0f2a35;border-right:3px solid var(--cyan)}
+.m.team{align-self:flex-end;background:#1d3a14;border-right:3px solid var(--lime)}
+.who{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-bottom:2px}
+.composer{border-top:1px solid var(--line);padding:10px;background:var(--p1);display:grid;gap:8px}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.quick button{border:1px solid var(--line);background:transparent;color:var(--mut);padding:2px 8px;border-radius:2px;font-size:12px}
+.quick button:hover{color:var(--text);border-color:var(--cyan)}
+.send{display:flex;gap:8px}.send textarea{min-height:44px;max-height:140px;resize:vertical}
+.note{font-size:12px;color:var(--mut)}.note.warn{color:var(--amb)}
+.panel{padding:14px;overflow:auto;display:grid;gap:12px;align-content:start}
+.panel h3{margin:0;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.kv{display:grid;grid-template-columns:90px 1fr;gap:4px 8px;font-size:13px}.kv dt{color:var(--mut)}.kv dd{margin:0;word-break:break-word}
+.empty{margin:auto;color:var(--mut);text-align:center;padding:30px}
+a{color:var(--cyan)}
+dialog{background:var(--p1);color:var(--text);border:1px solid var(--line);border-top:3px solid var(--vio);padding:18px;max-width:460px;width:calc(100% - 24px)}
+dialog::backdrop{background:rgba(0,0,0,.6)}
+dialog label{display:block;margin:10px 0 4px;color:var(--mut);font-size:12px}
+.err{color:var(--red);font-size:13px}
+.back{display:none}
+@media(max-width:1000px){main{grid-template-columns:300px 1fr}.col.right{display:none}}
+@media(max-width:700px){main{grid-template-columns:1fr}.col.mid{display:none}body.thread-open .col.left{display:none}body.thread-open .col.mid{display:flex}.back{display:inline-block}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">Analyt<span>IQ</span> Chat Dashboard</div>
+  <div class="stats" id="stats"></div>
+  <button class="btn" id="sound" title="Play a sound for new customer messages">Sound: off</button>
+  <button class="btn" id="refresh">Refresh</button>
+  <button class="btn" id="settings">Settings</button>
+</header>
+<main>
+  <section class="col left" aria-label="Conversations">
+    <div class="tools">
+      <input id="q" type="search" placeholder="Search name, phone or message" aria-label="Search conversations">
+      <div class="tabs" id="tabs"></div>
+    </div>
+    <div class="list" id="list"></div>
+  </section>
+  <section class="col mid" aria-label="Chat" id="mid"></section>
+  <aside class="col right" aria-label="Lead details"><div class="panel" id="side"></div></aside>
+</main>
+
+<dialog id="dlg">
+  <form method="dialog" id="cfgform">
+    <h2 style="margin:0 0 6px">Settings</h2>
+    <p class="note">Paste the Production URL of your "AnalytIQ 3 - Chat dashboard API" webhook and the dashboard key you set in that workflow. Leave the URL empty to preview with sample data.</p>
+    <label for="cfg-url">Dashboard API URL</label><input id="cfg-url" placeholder="https://YOUR-N8N/webhook/analytiq-dashboard">
+    <label for="cfg-key">Dashboard key</label><input id="cfg-key" type="password" autocomplete="off">
+    <label for="cfg-poll">Refresh every (seconds)</label><input id="cfg-poll" type="number" min="5" max="120" value="12">
+    <p class="err" id="cfg-err" role="alert"></p>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px"><button class="btn" value="cancel">Cancel</button><button class="btn pri" id="cfg-save" value="default">Save</button></div>
+  </form>
+</dialog>
+
+<script>
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var store = { get: function (k, d) { try { var v = localStorage.getItem(k); return v === null ? d : v; } catch (e) { return d; } }, set: function (k, v) { try { localStorage.setItem(k, v); } catch (e) {} } };
+  var cfg = { url: store.get('aq_url', ''), key: store.get('aq_key', ''), poll: Number(store.get('aq_poll', '12')) || 12, sound: store.get('aq_sound', '0') === '1' };
+  var demo = !cfg.url || /[?&]demo=1/.test(location.search);
+  var QUICK = [
+    ['Booking link', 'You can pick a time for a free 15-minute call here: https://cal.com/analytiq-digital/15min'],
+    ['Checking', 'Thanks for waiting. I am checking this now and will come back to you shortly.'],
+    ['Need details', 'Could you tell me a little more about what you want to build or fix, so I can point you the right way?'],
+    ['Proposal', 'Thanks. We will put together a written scope and price and send it to you here. Is email or WhatsApp better for you?']
+  ];
+  var SERVICE = { website_design: 'Website design', website_development: 'Website development', ai_automation: 'AI automation', ai_whatsapp_assistant: 'AI WhatsApp assistant', custom_software: 'Custom software', power_bi: 'Power BI', consulting: 'Consulting', erp: 'AnalytIQ ERP', garage_system: 'Garage system', school_portal: 'School portal', academy: 'Academy', other: 'Other' };
+  var MODE = { needs_human: 'Needs you', human: 'With you', ai: 'AI handling' };
+  var state = { convos: [], notStarted: [], stats: {}, filter: 'all', q: '', sel: null, thread: null, busy: false, lastNeeds: -1, lastInbound: {} };
+
+  /* ---------- demo data ---------- */
+  var now = Date.now(), ago = function (m) { return new Date(now - m * 60000).toISOString(); };
+  var D = {
+    convos: [
+      { phone: '2348031234567', name: 'Ada Obi', mode: 'needs_human', service: 'Website design', serviceKey: 'website_design', ref: 'AQ-7KQ2M', leadStatus: 'Chat started', owner: '', lastMessage: 'Can someone call me today? I want to start.', lastSender: 'customer', lastAt: ago(4), lastInboundAt: ago(4), windowOpen: true, windowEndsAt: ago(-1436), waiting: true, handoffReason: 'Asked for a call and is ready to start', total: 6 },
+      { phone: '2348055550111', name: 'Bayo Alabi', mode: 'ai', service: 'AnalytIQ ERP', serviceKey: 'erp', ref: 'AQ-H3N8P', leadStatus: 'Chat started', owner: '', lastMessage: 'ERP is a cloud-based point of sale and inventory system. How many branches do you have?', lastSender: 'ai', lastAt: ago(22), lastInboundAt: ago(23), windowOpen: true, windowEndsAt: ago(-1417), waiting: false, handoffReason: '', total: 4 },
+      { phone: '2347012345678', name: 'Grace Eze', mode: 'human', service: 'AI WhatsApp assistant', serviceKey: 'ai_whatsapp_assistant', ref: 'AQ-D5T9X', leadStatus: 'Call booked', owner: 'Mekan', lastMessage: 'Great, see you Thursday at 11.', lastSender: 'team', lastAt: ago(95), lastInboundAt: ago(100), windowOpen: true, windowEndsAt: ago(-1340), waiting: false, handoffReason: 'Wanted a demo', total: 9 },
+      { phone: '2349011122233', name: 'Tunde', mode: 'ai', service: 'Custom software', serviceKey: 'custom_software', ref: '', leadStatus: '', owner: '', lastMessage: 'Thanks, I will think about it.', lastSender: 'customer', lastAt: ago(1800), lastInboundAt: ago(1800), windowOpen: false, windowEndsAt: ago(360), waiting: false, handoffReason: '', total: 5 }
+    ],
+    notStarted: [{ ref: 'AQ-Q9W2E', name: 'Ife Bello', phone: '2348099988877', service: 'Power BI dashboards', submittedAt: ago(12), status: 'New' }],
+    stats: { conversations: 4, needsHuman: 1, humanActive: 1, aiHandling: 2, newLeads24h: 3, funnelLeadsTotal: 14, byService: { website_design: 5, erp: 3, ai_whatsapp_assistant: 3, custom_software: 2, power_bi: 1 } },
+    threads: {
+      '2348031234567': [['customer', 'Hi AnalytIQ, I\'m Ada. I just filled in your form about website design.', 40], ['ai', 'Good afternoon Ada, thanks for filling in the form about website design. What kind of business is it, and do you already have a website?', 40], ['customer', 'I sell fabrics in Wuse. No website yet.', 30], ['ai', 'Got it. A simple mobile-first site with your fabric ranges and a WhatsApp button is a good start. Websites begin from ₦450,000, with the exact price in a written quote after a free call. Want me to share the booking link?', 29], ['customer', 'Yes. Actually, can someone call me today? I want to start.', 4], ['ai', 'Of course, I have passed this to the team and someone will reply here shortly.', 4]]
+    }
+  };
+  function demoThread(p) {
+    var c = D.convos.filter(function (x) { return x.phone === p; })[0]; if (!c) return null;
+    var raw = D.threads[p] || [['customer', c.lastMessage, 5]];
+    return { ok: true, conversation: c, lead: { Ref: c.ref, Name: c.name, WaId: p, Phone: '+' + p, Email: 'ada@example.com', Business: 'Fabric shop', Service: c.service, Message: 'Need a website for my shop', Budget: '', Timeline: 'This month', Source: 'meta', Status: c.leadStatus, Owner: c.owner, Notes: '', 'Submitted at': ago(60) }, messages: raw.map(function (m, i) { return { id: i, sender: m[0], direction: m[0] === 'customer' ? 'in' : 'out', text: m[1], at: ago(m[2]) }; }) };
+  }
+
+  /* ---------- api ---------- */
+  function api(action, payload) {
+    if (demo) return demoApi(action, payload || {});
+    var body = Object.assign({ key: cfg.key, action: action }, payload || {});
+    return fetch(cfg.url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) })
+      .then(function (r) { return r.json().catch(function () { return { ok: false, error: 'Bad response (' + r.status + ')' }; }); })
+      .then(function (j) { if (j && j.ok === false) throw new Error(j.error || 'Request failed'); return j; });
+  }
+  function demoApi(action, p) {
+    return new Promise(function (res) {
+      setTimeout(function () {
+        var c = D.convos.filter(function (x) { return x.phone === p.phone; })[0];
+        if (action === 'list') return res({ ok: true, stats: D.stats, conversations: D.convos, notStarted: D.notStarted });
+        if (action === 'thread') return res(demoThread(p.phone));
+        if (action === 'reply' && c) { (D.threads[p.phone] = D.threads[p.phone] || []).push(['team', p.text, 0]); c.mode = 'human'; c.lastSender = 'team'; c.lastMessage = p.text; c.lastAt = ago(0); c.waiting = false; }
+        if (action === 'takeover' && c) c.mode = 'human';
+        if (action === 'close' && c) { c.mode = 'ai'; c.waiting = false; }
+        res({ ok: true });
+      }, 150);
+    });
+  }
+
+  /* ---------- helpers ---------- */
+  function el(tag, cls, text) { var e = document.createElement(tag); if (cls) e.className = cls; if (text !== undefined && text !== null) e.textContent = text; return e; }
+  function rel(iso) {
+    var t = new Date(iso).getTime(); if (!t) return ''; var s = Math.max(0, (Date.now() - t) / 1000);
+    if (s < 60) return 'now'; if (s < 3600) return Math.floor(s / 60) + 'm'; if (s < 86400) return Math.floor(s / 3600) + 'h';
+    return Math.floor(s / 86400) + 'd';
+  }
+  function clock(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }); }
+  function winLeft(c) { var ms = new Date(c.windowEndsAt).getTime() - Date.now(); if (!(ms > 0)) return ''; var h = Math.floor(ms / 3600000), m = Math.floor((ms % 3600000) / 60000); return h + 'h ' + m + 'm left'; }
+  function beep() { if (!cfg.sound) return; try { var a = new (window.AudioContext || window.webkitAudioContext)(), o = a.createOscillator(), g = a.createGain(); o.connect(g); g.connect(a.destination); o.frequency.value = 880; g.gain.value = 0.05; o.start(); setTimeout(function () { o.stop(); a.close(); }, 180); } catch (e) {} }
+
+  /* ---------- render ---------- */
+  function renderStats() {
+    var s = state.stats || {}, box = $('stats'); box.innerHTML = '';
+    [['Needs you', s.needsHuman, 'hot'], ['With you', s.humanActive, 'mid'], ['AI handling', s.aiHandling, ''], ['New leads 24h', s.newLeads24h, ''], ['All funnel leads', s.funnelLeadsTotal, '']].forEach(function (x) {
+      var c = el('span', 'chip ' + x[2], x[0]); c.appendChild(el('b', '', String(x[1] || 0))); box.appendChild(c);
+    });
+    document.title = (s.needsHuman ? '(' + s.needsHuman + ') ' : '') + 'AnalytIQ Chat Dashboard';
+  }
+  var TABS = [['all', 'All'], ['needs_human', 'Needs you'], ['human', 'With you'], ['ai', 'AI'], ['new', 'New leads']];
+  function renderTabs() {
+    var t = $('tabs'); t.innerHTML = '';
+    TABS.forEach(function (x) { var b = el('button', 'tab' + (state.filter === x[0] ? ' on' : ''), x[1]); b.onclick = function () { state.filter = x[0]; renderTabs(); renderList(); }; t.appendChild(b); });
+  }
+  function renderList() {
+    var box = $('list'); box.innerHTML = ''; var q = state.q.toLowerCase();
+    if (state.filter === 'new') {
+      var ns = state.notStarted.filter(function (n) { return !q || (n.name + n.phone + n.service).toLowerCase().indexOf(q) > -1; });
+      if (!ns.length) box.appendChild(el('div', 'empty', 'Every funnel lead has started a chat.'));
+      ns.forEach(function (n) {
+        var r = el('div', 'row'); var top = el('div', 'top'); top.appendChild(el('span', 'nm', n.name || n.phone)); top.appendChild(el('span', 'tm', rel(n.submittedAt))); r.appendChild(top);
+        r.appendChild(el('div', 'pv', (n.service || 'No service') + ' - has not messaged yet')); var a = el('a', '', 'Message on WhatsApp'); a.href = 'https://wa.me/' + String(n.phone).replace(/\D/g, ''); a.target = '_blank'; a.rel = 'noopener'; a.style.fontSize = '12px'; r.appendChild(a); box.appendChild(r);
+      }); return;
+    }
+    var rows = state.convos.filter(function (c) {
+      if (state.filter !== 'all' && c.mode !== state.filter) return false;
+      return !q || (c.name + c.phone + c.lastMessage + c.service).toLowerCase().indexOf(q) > -1;
+    });
+    if (!rows.length) box.appendChild(el('div', 'empty', 'No conversations here yet.'));
+    rows.forEach(function (c) {
+      var r = el('button', 'row' + (state.sel === c.phone ? ' sel' : '')); r.type = 'button';
+      var top = el('div', 'top'); var nm = el('span', 'nm'); if (c.waiting) nm.appendChild(el('span', 'dot')); nm.appendChild(document.createTextNode(c.name || '+' + c.phone)); top.appendChild(nm); top.appendChild(el('span', 'tm', rel(c.lastAt))); r.appendChild(top);
+      var pv = el('div', 'pv', (c.lastSender === 'customer' ? '' : c.lastSender === 'team' ? 'You: ' : 'AI: ') + c.lastMessage); r.appendChild(pv);
+      var tags = el('div'); tags.style.marginTop = '4px'; tags.appendChild(el('span', 'badge b-' + c.mode, MODE[c.mode] || c.mode)); if (c.service) tags.appendChild(el('span', 'badge', c.service)); r.appendChild(tags);
+      r.onclick = function () { openThread(c.phone); }; box.appendChild(r);
+    });
+  }
+  function renderThread() {
+    var mid = $('mid'); mid.innerHTML = ''; var t = state.thread;
+    if (!t) { mid.appendChild(el('div', 'empty', 'Choose a conversation on the left.')); renderSide(); return; }
+    var c = t.conversation, head = el('div', 'thread-head');
+    var back = el('button', 'btn back', 'Back'); back.onclick = function () { document.body.classList.remove('thread-open'); state.sel = null; state.thread = null; renderList(); renderThread(); }; head.appendChild(back);
+    var h = el('h2', '', c.name || '+' + c.phone); head.appendChild(h);
+    head.appendChild(el('span', 'badge b-' + c.mode, MODE[c.mode] || c.mode));
+    if (c.service) head.appendChild(el('span', 'badge', c.service));
+    var wl = c.windowOpen ? winLeft(c) : ''; head.appendChild(el('span', 'badge ' + (c.windowOpen ? '' : 'b-warn'), c.windowOpen ? 'Reply window: ' + wl : '24h window closed'));
+    head.appendChild(el('span', 'sp'));
+    if (c.mode === 'ai') { var tk = el('button', 'btn pri', 'Take over'); tk.onclick = function () { act('takeover'); }; head.appendChild(tk); }
+    else { var hb = el('button', 'btn', 'Hand back to AI'); hb.onclick = function () { act('close', { notify: false }); }; head.appendChild(hb); var hb2 = el('button', 'btn', 'Close + thank customer'); hb2.onclick = function () { act('close', { notify: true }); }; head.appendChild(hb2); }
+    mid.appendChild(head);
+    var box = el('div', 'msgs'); box.id = 'msgs';
+    (t.messages || []).forEach(function (m) {
+      var b = el('div', 'm ' + (m.sender === 'customer' ? 'customer' : m.sender === 'team' ? 'team' : 'ai'));
+      b.appendChild(el('div', 'who', m.sender === 'customer' ? (c.name || 'Customer') : m.sender === 'team' ? 'You / team' : 'AI assistant'));
+      b.appendChild(document.createTextNode(m.text)); b.appendChild(el('small', '', clock(m.at))); box.appendChild(b);
+    });
+    mid.appendChild(box);
+    var comp = el('div', 'composer');
+    if (c.mode === 'ai') comp.appendChild(el('div', 'note', 'The AI is answering this chat. Sending a message here takes over from the AI until you hand the chat back.'));
+    if (!c.windowOpen) comp.appendChild(el('div', 'note warn', 'WhatsApp only allows free-form replies within 24 hours of the customer\'s last message. Replies are likely to be refused until they write again.'));
+    var q = el('div', 'quick'); QUICK.forEach(function (x) { var b = el('button', '', x[0]); b.type = 'button'; b.onclick = function () { var ta = $('reply'); ta.value = (ta.value ? ta.value + ' ' : '') + x[1]; ta.focus(); }; q.appendChild(b); }); comp.appendChild(q);
+    var row = el('div', 'send'); var ta = el('textarea'); ta.id = 'reply'; ta.placeholder = 'Type a reply (Enter to send, Shift+Enter for a new line)'; ta.setAttribute('aria-label', 'Reply');
+    var sd = el('button', 'btn pri', 'Send'); sd.id = 'sendbtn'; sd.type = 'button';
+    ta.onkeydown = function (e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } };
+    sd.onclick = send; row.appendChild(ta); row.appendChild(sd); comp.appendChild(row); comp.appendChild(el('div', 'err', '')).id = 'senderr'; mid.appendChild(comp);
+    box.scrollTop = box.scrollHeight; renderSide();
+  }
+  function renderSide() {
+    var s = $('side'); s.innerHTML = ''; var t = state.thread;
+    if (!t) {
+      s.appendChild(el('h3', '', 'Leads by service')); var by = (state.stats && state.stats.byService) || {}, keys = Object.keys(by);
+      if (!keys.length) s.appendChild(el('div', 'note', 'No funnel leads yet.'));
+      keys.sort(function (a, b) { return by[b] - by[a]; }).forEach(function (k) { var d = el('div', 'kv'); d.appendChild(el('dt', '', SERVICE[k] || k)); d.appendChild(el('dd', '', String(by[k]))); s.appendChild(d); });
+      return;
+    }
+    var c = t.conversation, l = t.lead;
+    s.appendChild(el('h3', '', 'Contact'));
+    var kv = el('dl', 'kv'); kv.style.margin = 0;
+    function add(k, v) { if (!v) return; kv.appendChild(el('dt', '', k)); kv.appendChild(el('dd', '', v)); }
+    add('Name', c.name); add('WhatsApp', '+' + c.phone); if (l) { add('Email', l['Email']); add('Business', l['Business']); add('Service', l['Service']); add('Note', l['Message']); add('Budget', l['Budget']); add('Timeline', l['Timeline']); add('Source', [l['Source'], l['Medium'], l['Campaign']].filter(Boolean).join(' / ')); add('Ref', l['Ref']); add('Submitted', clock(l['Submitted at'])); }
+    if (c.handoffReason) add('Why handed off', c.handoffReason);
+    s.appendChild(kv);
+    var a = el('a', '', 'Open in WhatsApp'); a.href = 'https://wa.me/' + c.phone; a.target = '_blank'; a.rel = 'noopener'; s.appendChild(a);
+    if (l && l['Ref']) {
+      s.appendChild(el('h3', '', 'Lead tracking'));
+      var st = el('select'); ['New', 'Chat started', 'Contacted', 'Call booked', 'Proposal sent', 'Won', 'Lost', 'Not a fit'].forEach(function (o) { var op = el('option', '', o); op.value = o; if (o === l['Status']) op.selected = true; st.appendChild(op); });
+      if (l['Status'] && Array.prototype.every.call(st.options, function (o) { return o.value !== l['Status']; })) { var x = el('option', '', l['Status']); x.value = l['Status']; x.selected = true; st.appendChild(x); }
+      var ow = el('input'); ow.placeholder = 'Owner'; ow.value = l['Owner'] || ''; ow.setAttribute('aria-label', 'Owner');
+      var nt = el('textarea'); nt.placeholder = 'Notes'; nt.value = l['Notes'] || ''; nt.setAttribute('aria-label', 'Notes'); nt.rows = 4;
+      var sv = el('button', 'btn pri', 'Save lead'); var ms = el('div', 'note', '');
+      sv.onclick = function () { sv.disabled = true; api('update_lead', { ref: l['Ref'], status: st.value, owner: ow.value, notes: nt.value }).then(function () { ms.textContent = 'Saved.'; l['Status'] = st.value; l['Owner'] = ow.value; l['Notes'] = nt.value; loadList(); }).catch(function (e) { ms.textContent = e.message; ms.className = 'err'; }).then(function () { sv.disabled = false; }); };
+      [st, ow, nt, sv, ms].forEach(function (n) { s.appendChild(n); });
+    }
+  }
+
+  /* ---------- actions ---------- */
+  function loadList() {
+    return api('list').then(function (j) {
+      var prevNeeds = state.lastNeeds, inbound = state.lastInbound, hit = false;
+      state.convos = j.conversations || []; state.notStarted = j.notStarted || []; state.stats = j.stats || {};
+      state.convos.forEach(function (c) { var k = c.lastInboundAt || ''; if (inbound[c.phone] !== undefined && k && k !== inbound[c.phone] && c.mode !== 'ai') hit = true; inbound[c.phone] = k; });
+      if ((prevNeeds >= 0 && state.stats.needsHuman > prevNeeds) || hit) beep();
+      state.lastNeeds = state.stats.needsHuman || 0;
+      renderStats(); renderList();
+    }).catch(function (e) { $('list').innerHTML = ''; $('list').appendChild(el('div', 'empty err', e.message)); });
+  }
+  function openThread(p, keepScroll) {
+    state.sel = p; document.body.classList.add('thread-open');
+    return api('thread', { phone: p }).then(function (j) {
+      var draft = $('reply') ? $('reply').value : ''; var box = $('msgs'); var atEnd = !box || box.scrollHeight - box.scrollTop - box.clientHeight < 60;
+      state.thread = j; renderThread(); renderList();
+      if (draft && $('reply')) $('reply').value = draft;
+      if (keepScroll && !atEnd && $('msgs')) $('msgs').scrollTop = box.scrollTop;
+    }).catch(function (e) { alert(e.message); });
+  }
+  function send() {
+    var ta = $('reply'), text = ta.value.trim(); if (!text || state.busy) return;
+    state.busy = true; $('sendbtn').disabled = true; $('senderr').textContent = '';
+    var c = state.thread.conversation;
+    api('reply', { phone: c.phone, name: c.name, text: text }).then(function () { ta.value = ''; return openThread(c.phone); }).then(loadList)
+      .catch(function (e) { $('senderr').textContent = e.message; })
+      .then(function () { state.busy = false; if ($('sendbtn')) $('sendbtn').disabled = false; });
+  }
+  function act(action, extra) {
+    var c = state.thread.conversation;
+    if (action === 'close' && !confirm('Hand this chat back to the AI?')) return;
+    api(action, Object.assign({ phone: c.phone, name: c.name }, extra || {})).then(function () { return openThread(c.phone); }).then(loadList).catch(function (e) { alert(e.message); });
+  }
+
+  /* ---------- settings + boot ---------- */
+  $('settings').onclick = function () { $('cfg-url').value = cfg.url; $('cfg-key').value = cfg.key; $('cfg-poll').value = cfg.poll; $('cfg-err').textContent = ''; $('dlg').showModal(); };
+  $('cfgform').addEventListener('submit', function (e) {
+    var v = e.submitter && e.submitter.value; if (v !== 'default') return;
+    var u = $('cfg-url').value.trim(); if (u && !/^https?:\/\//.test(u)) { e.preventDefault(); $('cfg-err').textContent = 'The URL must start with https://'; return; }
+    cfg.url = u; cfg.key = $('cfg-key').value; cfg.poll = Math.max(5, Number($('cfg-poll').value) || 12);
+    store.set('aq_url', cfg.url); store.set('aq_key', cfg.key); store.set('aq_poll', String(cfg.poll)); location.reload();
+  });
+  $('sound').onclick = function () { cfg.sound = !cfg.sound; store.set('aq_sound', cfg.sound ? '1' : '0'); $('sound').textContent = 'Sound: ' + (cfg.sound ? 'on' : 'off'); if (cfg.sound) beep(); };
+  $('sound').textContent = 'Sound: ' + (cfg.sound ? 'on' : 'off');
+  $('refresh').onclick = function () { loadList(); if (state.sel) openThread(state.sel, true); };
+  $('q').oninput = function (e) { state.q = e.target.value; renderList(); };
+  if (demo) { var b = el('span', 'chip mid', 'Demo mode: sample data'); $('stats').parentNode.insertBefore(b, $('stats')); }
+  renderTabs(); renderThread(); loadList();
+  setInterval(function () { if (document.hidden) return; loadList(); if (state.sel && !(document.activeElement && document.activeElement.id === 'reply' && $('reply').value)) openThread(state.sel, true); }, cfg.poll * 1000);
+})();
+</script>
+</body>
+</html>

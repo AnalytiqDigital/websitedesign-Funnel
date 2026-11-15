@@ -1,66 +1,36 @@
-module.exports = async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.setHeader('Allow', 'POST');
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+/*
+ * Vercel serverless function for your funnel project: /api/leads.js
+ * It receives the form from the funnel page and forwards it to your n8n workflow
+ * "AnalytIQ 1 - Funnel intake", so the n8n address stays private and there are no browser CORS problems.
+ *
+ * Setup: in the funnel's Vercel project, Settings, Environment Variables, add
+ *   N8N_FUNNEL_WEBHOOK = the Production URL of the "Funnel Form Webhook" node (ends in /webhook/analytiq-funnel)
+ * then redeploy.
+ *
+ * This is the CommonJS version. If your funnel's package.json contains "type": "module",
+ * replace the first line with:  export default async function handler(req, res) {
+ * and delete the last line (module.exports...).
+ */
+async function handler(req, res) {
+  if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false, error: 'Method not allowed' }); }
+  const url = process.env.N8N_FUNNEL_WEBHOOK;
+  if (!url) return res.status(500).json({ ok: false, error: 'The form is not connected yet. Please use WhatsApp instead.' });
 
-  const body = req.body;
-  if (!body || typeof body !== 'object' || Array.isArray(body)) {
-    return res.status(400).json({ error: 'Invalid form submission.' });
-  }
+  let body = req.body;
+  if (typeof body === 'string') { try { body = JSON.parse(body); } catch (e) { body = {}; } }
+  body = body && typeof body === 'object' ? body : {};
 
-  if (typeof body.name !== 'string' || !body.name.trim()) {
-    return res.status(400).json({ error: 'Please enter your name.' });
-  }
-  if (typeof body.phone !== 'string' || body.phone.replace(/\D/g, '').length < 10) {
-    return res.status(400).json({ error: 'Please enter a WhatsApp number we can reach.' });
-  }
-  if (typeof body.service !== 'string' || !body.service.trim()) {
-    return res.status(400).json({ error: 'Please select a website or service type.' });
-  }
-  if (typeof body.budget !== 'string' || !body.budget.trim()) {
-    return res.status(400).json({ error: 'Please select your estimated project budget.' });
-  }
-  if (body.consent !== true) {
-    return res.status(400).json({ error: 'Please agree to be contacted before submitting.' });
-  }
-
-  const webhookUrl = process.env.N8N_WEBHOOK_URL;
-  if (!webhookUrl) {
-    console.error('N8N_WEBHOOK_URL is not configured.');
-    return res.status(500).json({ error: 'Lead service is not configured. Set N8N_WEBHOOK_URL in Vercel and redeploy.' });
-  }
-
-  let destination;
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
   try {
-    destination = new URL(webhookUrl);
-  } catch (error) {
-    console.error('N8N_WEBHOOK_URL is not a valid URL.');
-    return res.status(500).json({ error: 'Lead service configuration is invalid.' });
+    const r = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body), signal: ctrl.signal });
+    const data = await r.json().catch(() => ({}));
+    if (!r.ok || data.ok === false) return res.status(r.status === 422 ? 422 : 502).json({ ok: false, error: data.error || 'We could not save your details. Please try WhatsApp instead.' });
+    return res.status(200).json({ ok: true, redirectUrl: data.redirectUrl, ref: data.ref });
+  } catch (e) {
+    return res.status(504).json({ ok: false, error: 'That took too long. Please try again or use WhatsApp.' });
+  } finally {
+    clearTimeout(timer);
   }
-  if (destination.protocol !== 'https:') {
-    console.error('N8N_WEBHOOK_URL must use HTTPS.');
-    return res.status(500).json({ error: 'Lead service configuration is invalid.' });
-  }
-
-  let response;
-  try {
-    response = await fetch(destination, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body),
-    });
-  } catch (error) {
-    console.error('Could not reach the n8n webhook:', error);
-    return res.status(502).json({ error: 'Could not reach the lead service. Please try again or contact us on WhatsApp.' });
-  }
-
-  if (!response.ok) {
-    console.error(`The n8n webhook returned HTTP ${response.status}.`);
-    return res.status(502).json({
-      error: `The n8n webhook returned HTTP ${response.status}. Check the production webhook URL, workflow activation, and latest n8n execution.`,
-    });
-  }
-
-  return res.status(200).json({ ok: true });
-};
+}
+module.exports = handler;
